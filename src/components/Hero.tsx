@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import coholdLogo from "@/assets/cohold-logo.png";
+import coholdLogo from "@/assets/cohold-pic.png";
 import { ParticlesBackground } from "./ParticlesBackground";
 
 export const Hero = () => {

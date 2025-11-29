@@ -3,32 +3,50 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 
 const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/hic4zfs27gw7d90umnh5bfaj26law9t8";
 
+// AFRICAN COUNTRY CODES
+const africanCodes = [
+  { code: "+234", country: "Nigeria" },
+  { code: "+233", country: "Ghana" },
+  { code: "+254", country: "Kenya" },
+  { code: "+255", country: "Tanzania" },
+  { code: "+256", country: "Uganda" },
+  { code: "+27", country: "South Africa" },
+  { code: "+212", country: "Morocco" },
+  { code: "+213", country: "Algeria" },
+  { code: "+216", country: "Tunisia" },
+];
+
 const formSchema = z.object({
   name: z.string().trim().min(1, "Name is required"),
   email: z.string().trim().email("Invalid email address"),
+  phone: z.string().trim().min(7, "Phone number is too short"),
+  code: z.string().trim().min(1, "Select a country code"),
 });
 
 export const WaitlistForm = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [code, setCode] = useState("+234");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const result = formSchema.safeParse({ name, email });
+    const result = formSchema.safeParse({ name, email, phone, code });
 
     if (!result.success) {
       const errors = result.error.flatten().fieldErrors;
       toast({
         title: "Validation Error",
-        description: errors.name?.[0] || errors.email?.[0],
+        description: errors.name?.[0] || errors.email?.[0] || errors.phone?.[0],
         variant: "destructive",
       });
       return;
@@ -39,13 +57,11 @@ export const WaitlistForm = () => {
     try {
       await fetch(MAKE_WEBHOOK_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: result.data.name,
           email: result.data.email,
+          phone: `${result.data.code}${result.data.phone}`,
           timestamp: new Date().toISOString(),
           source: "coholdHQ_waitlist",
         }),
@@ -58,6 +74,9 @@ export const WaitlistForm = () => {
 
       setName("");
       setEmail("");
+      setPhone("");
+      setCode("+234");
+
     } catch (error) {
       toast({
         title: "Error",
@@ -106,6 +125,34 @@ export const WaitlistForm = () => {
                 disabled={isSubmitting}
                 required
               />
+            </div>
+
+            {/* PHONE INPUT UI */}
+            <div className="space-y-2">
+              <Label>Phone Number</Label>
+
+              <div className="flex gap-3">
+                <Select value={code} onValueChange={setCode} disabled={isSubmitting}>
+                  <SelectTrigger className="w-32">
+                    <SelectValue placeholder="Code" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {africanCodes.map((item) => (
+                      <SelectItem key={item.code} value={item.code}>
+                        {item.country} ({item.code})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Input
+                  type="tel"
+                  placeholder="8123456789"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  disabled={isSubmitting}
+                />
+              </div>
             </div>
 
             <Button type="submit" disabled={isSubmitting} className="w-full h-12">
