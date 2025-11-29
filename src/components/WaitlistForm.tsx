@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 
-const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/hic4zfs27gw7d90umnh5bfaj26law9t8";
+const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/9ukphar2g65lfv4wpgq2f17x8ibma1k4";
 
 // AFRICAN COUNTRY CODES
 const africanCodes = [
