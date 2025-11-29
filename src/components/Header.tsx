@@ -29,8 +29,15 @@ export const Header = () => {
           onClick={() => scrollToSection("hero")}
           className="flex items-center gap-2 hover:opacity-80 transition-opacity"
         >
-          <img src={logo} alt="CoholdHQ" className="h-10 w-auto" />
-          <span className="font-bold text-xl text-primary">Cohold</span>
+          <img 
+            src={logo} 
+            alt="CoholdHQ" 
+            className="h-20 w-auto object-contain"
+            style={{
+              filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.08))"
+            }}
+          />
+          <span className="font-bold text-xl text-primary"></span>
         </button>
 
         {/* Desktop Navigation */}
