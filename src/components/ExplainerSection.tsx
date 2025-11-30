@@ -18,7 +18,7 @@ export const ExplainerSection = () => {
           </h2>
           <p className="text-lg text-muted-foreground leading-relaxed">
             Fractional real estate allows you to own a percentage of a property instead of buying the whole thing. 
-            With Cohold, you can invest in quality African properties with as little capital as you have, 
+            With Cohold, you can invest in quality properties with as little capital as you have, 
             earning rental income and benefiting from property appreciation—all without the burden of full ownership.
           </p>
         </motion.div>
