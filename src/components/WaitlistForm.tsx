@@ -6,6 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import { fbq } from "../lib/fbPixel";
+
+
 
 const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/9ukphar2g65lfv4wpgq2f17x8ibma1k4";
 
@@ -72,6 +75,10 @@ export const WaitlistForm = () => {
         description: "We'll notify you when Cohold launches.",
       });
 
+       // Fire Meta Pixel events
+      fbq("track", "Lead"); // standard lead event
+      fbq("track", "CompleteRegistration"); // optional, tracks completed signup
+
       setName("");
       setEmail("");
       setPhone("");
@@ -83,6 +90,10 @@ export const WaitlistForm = () => {
         description: "Something went wrong. Try again.",
         variant: "destructive",
       });
+
+      // track failed registration
+      fbq("track", "FailedRegistration");
+
     } finally {
       setIsSubmitting(false);
     }
