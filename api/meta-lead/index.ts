@@ -29,6 +29,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         event_name: 'waitlistJoined',
         event_time: Math.floor(Date.now() / 1000),
         action_source: 'website',
+        event_source_url: 'https://cohold-waitlist.vercel.app/',
         user_data: {
           em: [sha256(email)],
         },
