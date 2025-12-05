@@ -87,7 +87,7 @@ export const WaitlistForm = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: result.data.email,
+          email
         }),
       });
 
