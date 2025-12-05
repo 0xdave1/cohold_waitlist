@@ -8,8 +8,6 @@ import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import { fbq } from "../lib/fbPixel";
 
-
-
 const MAKE_WEBHOOK_URL = "https://hook.eu1.make.com/9ukphar2g65lfv4wpgq2f17x8ibma1k4";
 
 // AFRICAN COUNTRY CODES
@@ -49,7 +47,11 @@ export const WaitlistForm = () => {
       const errors = result.error.flatten().fieldErrors;
       toast({
         title: "Validation Error",
-        description: errors.name?.[0] || errors.email?.[0] || errors.phone?.[0],
+        description:
+          errors.name?.[0] ||
+          errors.email?.[0] ||
+          errors.phone?.[0] ||
+          "Please check your input",
         variant: "destructive",
       });
       return;
@@ -58,6 +60,7 @@ export const WaitlistForm = () => {
     setIsSubmitting(true);
 
     try {
+      // 1) SEND DATA TO MAKE.COM
       await fetch(MAKE_WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -70,15 +73,25 @@ export const WaitlistForm = () => {
         }),
       });
 
+      // 2) FIRE META PIXEL (Browser-side)
+      fbq("track", "Lead");
+      fbq("track", "CompleteRegistration");
+
+      // 3) FIRE META CONVERSIONS API (Server-side)
+      await fetch("/api/meta-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: result.data.email,
+        }),
+      });
+
       toast({
         title: "You're in! 🎉",
         description: "We'll notify you when Cohold launches.",
       });
 
-       // Fire Meta Pixel events
-      fbq("track", "Lead"); // standard lead event
-      fbq("track", "CompleteRegistration"); // optional, tracks completed signup
-
+      // RESET FORM
       setName("");
       setEmail("");
       setPhone("");
@@ -91,7 +104,7 @@ export const WaitlistForm = () => {
         variant: "destructive",
       });
 
-      // track failed registration
+      // Track failed registration
       fbq("track", "FailedRegistration");
 
     } finally {
@@ -138,10 +151,9 @@ export const WaitlistForm = () => {
               />
             </div>
 
-            {/* PHONE INPUT UI */}
+            {/* PHONE INPUT */}
             <div className="space-y-2">
               <Label>Phone Number</Label>
-
               <div className="flex gap-3">
                 <Select value={code} onValueChange={setCode} disabled={isSubmitting}>
                   <SelectTrigger className="w-32">
