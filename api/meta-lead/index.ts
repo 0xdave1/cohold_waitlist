@@ -26,13 +26,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const eventPayload = {
     data: [
       {
-        event_name: 'Lead',
+        event_name: 'waitlistJoined',
         event_time: Math.floor(Date.now() / 1000),
         action_source: 'website',
-        event_source_url: 'https://cohold-waitlist.vercel.app/',
         user_data: {
-          em: email ? [sha256(email)] : [],
+          em: [sha256(email)],
         },
+        test_event_code: 'TEST78781',
+        
+        // event_name: 'Lead',
+        // event_time: Math.floor(Date.now() / 1000),
+        // action_source: 'website',
+        // event_source_url: 'https://cohold-waitlist.vercel.app/',
+        // user_data: {
+         // em: email ? [sha256(email)] : [],
+      //  },
       },
     ],
   };
