@@ -41,6 +41,10 @@ export const WaitlistForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    fbq("track", "InitiateCheckout");
+
+    // VALIDATE FORM DATA
+
     const result = formSchema.safeParse({ name, email, phone, code });
 
     if (!result.success) {
@@ -76,6 +80,7 @@ export const WaitlistForm = () => {
       // 2) FIRE META PIXEL (Browser-side)
       fbq("track", "Lead");
       fbq("track", "CompleteRegistration");
+      fbq("trackCustom", "waitlistJoined");
 
       // 3) FIRE META CONVERSIONS API (Server-side)
       await fetch("/api/meta-lead", {
@@ -178,7 +183,14 @@ export const WaitlistForm = () => {
               </div>
             </div>
 
-            <Button type="submit" disabled={isSubmitting} className="w-full h-12">
+            <Button 
+              type="submit" 
+              disabled={isSubmitting} 
+              className="w-full h-12"
+              onClick={() => {
+                fbq("trackCustom", "waitlistButtonclicked");
+              }} 
+              >
               {isSubmitting ? "Joining..." : "Join Waitlist"}
             </Button>
           </form>
