@@ -33,7 +33,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         user_data: {
           em: [sha256(email)],
         },
-        test_event_code: 'TEST78781',
+        // test_event_code: 'TEST78781',
         
         // event_name: 'Lead',
         // event_time: Math.floor(Date.now() / 1000),
